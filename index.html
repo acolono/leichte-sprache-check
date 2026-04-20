@@ -1,127 +1,319 @@
-<html lang="en">
+<!DOCTYPE html>
+
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>ls-check-wip</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leichte Sprache Checker</title>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Leichte-Sprache-Checker</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3/dist/cdn.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.15.0/cdn.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet"/>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'tertiary-fixed-dim': '#bfc2fa',
+            'inverse-surface': '#20333c',
+            'inverse-on-surface': '#e0f4ff',
+            'on-primary-container': '#9dabff',
+            'on-tertiary-container': '#a9ace2',
+            'on-tertiary-fixed-variant': '#3f4372',
+            'tertiary-fixed': '#e0e0ff',
+            'on-tertiary-fixed': '#131643',
+            'on-primary': '#fff',
+            'secondary-container': '#fcd400',
+            'on-secondary-fixed': '#221b00',
+            'outline-variant': '#c5c5d5',
+            'background': '#f4faff',
+            'on-surface': '#091e27',
+            'primary-container': '#2337a0',
+            'on-secondary-fixed-variant': '#544600',
+            'outline': '#757684',
+            'primary': '#001c89',
+            'on-primary-fixed-variant': '#273ba4',
+            'on-error': '#fff',
+            'surface-container-low': '#e7f6ff',
+            'on-tertiary': '#fff',
+            'surface-container': '#dcf1fd',
+            'error': '#ba1a1a',
+            'surface-variant': '#d1e6f2',
+            'surface-tint': '#4255bd',
+            'surface-container-highest': '#d1e6f2',
+            'on-surface-variant': '#454653',
+            'on-secondary': '#fff',
+            'secondary': '#705d00',
+            'inverse-primary': '#bac3ff',
+            'error-container': '#ffdad6',
+            'on-error-container': '#93000a',
+            'surface-container-high': '#d6ebf8',
+            'surface-bright': '#f4faff',
+            'on-secondary-container': '#6e5c00',
+            'surface-dim': '#c8dde9',
+            'surface': '#f4faff',
+            'on-background': '#091e27',
+            'secondary-fixed': '#ffe16d',
+            'secondary-fixed-dim': '#e9c400',
+            'tertiary-container': '#3b3f6e',
+            'on-primary-fixed': '#000f5c',
+            'primary-fixed-dim': '#bac3ff',
+            'primary-fixed': '#dee0ff',
+            'tertiary': '#252956',
+            'surface-container-lowest': '#fff',
+          },
+          fontFamily: {
+            'headline': ['Atkinson Hyperlegible'],
+            'body': ['Atkinson Hyperlegible'],
+            'label': ['Atkinson Hyperlegible'],
+          },
+          borderRadius: { 'DEFAULT': '0.25rem', 'lg': '0.5rem', 'xl': '0.75rem', 'full': '9999px' },
+        },
+      },
+    };
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+    }
+    body {
+      font-family: 'Atkinson Hyperlegible', sans-serif;
+      line-height: 1.6;
+      min-height: max(884px, 100dvh);
+    }
+    /* Regel: Maximal 8 Wörter pro Zeile für Leichte-Sprache-Lesbarkeit */
+    .easy-read-width {
+      max-width: 45ch;
+    }
+    :focus-visible {
+      outline: 3px solid #001c89;
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    summary:focus-visible {
+      outline-offset: -3px;
+      border-radius: 24px;
+    }
+    textarea {
+      border: none !important;
+      box-shadow: none !important;
+      scrollbar-width: thin;
+      scrollbar-color: #001c89 transparent;
+    }
+    textarea::-webkit-scrollbar {
+      width: 12px;
+    }
+    textarea::-webkit-scrollbar-track {
+      background: transparent;
+      margin: 20px;
+    }
+    textarea::-webkit-scrollbar-thumb {
+      background: #001c89;
+      border-radius: 99px;
+      min-height: 40px;
+    }
+    textarea::-webkit-scrollbar-thumb:hover {
+      background: #001c89;
+    }
+    textarea:focus-visible {
+      outline: 3px solid #001c89 !important;
+      outline-offset: 3px;
+      border-radius: 32px;
+      box-shadow: none !important;
+    }
+  </style>
 </head>
+<body class="bg-background text-on-background min-h-screen pb-32 md:pl-28">
 
-<body class="bg-gray-50 min-h-screen">
-<div class="container mx-auto px-4 py-8 max-w-5xl" x-data="checker()">
-  <!-- Header -->
-  <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-2">Leichte Sprache Checker</h1>
-    <p class="text-gray-600">Überprüfen Sie Ihren Text auf Verständlichkeit</p>
+<!-- Skip Links -->
+<div class="sr-only focus-within:not-sr-only focus-within:fixed focus-within:top-4 focus-within:left-1/2 focus-within:-translate-x-1/2 focus-within:z-[100] focus-within:flex focus-within:gap-3">
+  <a href="#textInput" class="bg-primary text-white font-bold px-5 py-3 rounded-xl shadow-lg">Zur Texteingabe</a>
+  <a href="#sidebar-first" class="bg-primary text-white font-bold px-5 py-3 rounded-xl shadow-lg">Zur Navigation</a>
+</div>
+
+<!-- TopAppBar -->
+<header
+  class="bg-[#f4faff] dark:bg-slate-950/80 backdrop-blur-xl shadow-xl shadow-[#091e27]/5 flex justify-between items-center px-6 py-4 w-full top-0 z-50 sticky md:-ml-28 md:w-[calc(100%+7rem)]">
+  <div class="flex items-center gap-4">
+    <h1 class="text-2xl font-black text-[#001c89] tracking-tighter">Leichte Sprache Checker</h1>
   </div>
+</header>
 
-  <!-- Input Area -->
-  <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-    <label for="textInput" class="block text-sm font-medium text-gray-700 mb-2">
-      Text eingeben
-    </label>
-    <textarea
-      id="textInput"
-      x-model="inputText"
-      rows="8"
-      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-      placeholder="Geben Sie hier Ihren Text ein..."
-    ></textarea>
+<main class="px-6 py-10 max-w-4xl mx-auto space-y-10" x-data="checker()">
 
-    <!-- Demo Text Buttons -->
-    <div class="mt-3 mb-4 flex flex-wrap gap-4 text-sm">
-      <span>Beispiele verwenden:</span>
-      <button
-        @click="loadDemoText('b2')"
-        class="text-blue-600 hover:text-blue-800 underline"
+  <!-- Einführungsbereich -->
+  <section class="space-y-4">
+    <div
+      class="bg-secondary-container/20 rounded-[32px] p-8 md:p-12 border-2 border-dashed border-secondary-container/30">
+      <h2 class="text-3xl md:text-5xl font-black text-primary leading-tight easy-read-width">
+        Willkommen!
+      </h2>
+      <p class="text-xl md:text-2xl font-medium mt-6 text-on-surface easy-read-width">
+        Hier kannst du Texte auf Leichte Sprache prüfen. So siehst du, was noch schwierig ist.
+      </p>
+    </div>
+  </section>
+
+  <!-- Texteingabe -->
+  <section class="space-y-6">
+    <div class="flex items-center justify-between mb-2">
+      <label for="textInput" class="text-lg font-bold text-on-surface-variant uppercase tracking-widest">Dein
+        Text</label>
+    </div>
+    <div class="relative" @keydown.escape.window="clipboardBanner = false; clipboardDismissed = true">
+      <!-- Clipboard Banner -->
+      <div
+        x-show="clipboardBanner"
+        x-transition:enter="transition ease-out duration-150"
+        x-transition:enter-start="opacity-0 -translate-y-1"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-100"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-1"
+        class="absolute -top-0.5 left-8 right-8 z-10 bg-[#001c89] text-white px-6 py-3 rounded-b-[24px] flex items-center justify-between gap-4"
+        role="region"
+        aria-label="Text aus Zwischenablage einfügen"
       >
+        <span class="text-base font-semibold">Text aus Zwischenablage einfügen?</span>
+        <div class="flex gap-2 shrink-0">
+          <button
+            @click="pasteClipboard(); $refs.textarea.focus()"
+            class="px-4 py-1.5 rounded-xl bg-white text-[#001c89] font-bold text-sm hover:bg-blue-50 transition-colors"
+          >Einfügen</button>
+          <button
+            @click="clipboardBanner = false; clipboardDismissed = true"
+            class="px-4 py-1.5 rounded-xl bg-white/20 text-white font-bold text-sm hover:bg-white/30 transition-colors"
+          >Nein</button>
+        </div>
+      </div>
+
+      <textarea
+        id="textInput"
+        x-ref="textarea"
+        x-model="inputText"
+        rows="2"
+        class="w-full px-8 pb-8 text-2xl bg-surface-container-lowest border-none rounded-[32px] shadow-[0_8px_24px_-6px_rgba(0,0,0,0.12)] transition-all text-on-surface placeholder:text-on-surface-variant/40 resize-y scroll-mt-28"
+        :style="{ paddingTop: clipboardBanner ? '5rem' : '2rem', transition: 'height 0.2s ease, padding-top 0.15s ease' }"
+        @focus="$el.rows = 7; checkClipboard()"
+        @blur="$el.rows = inputText.trim() ? 7 : 2; clipboardDismissed = false"
+        placeholder="Text hier eingeben oder einfügen ..."
+      ></textarea>
+    </div>
+
+    <div class="flex justify-center">
+      <button
+        @click="checkText()"
+        :disabled="loading || !inputText.trim()"
+        class="bg-primary text-on-primary py-3 px-8 rounded-[20px] text-lg font-black flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.99] transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+      >
+        <template x-if="!loading">
+          <span class="flex items-center gap-3"><span>✓</span> Text prüfen</span>
+        </template>
+        <template x-if="loading">
+          <span class="flex items-center gap-3">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Wird geprüft ...
+          </span>
+        </template>
+      </button>
+    </div>
+
+    <!-- Beispieltexte -->
+    <div class="flex flex-wrap items-center gap-4 text-base text-on-surface-variant">
+      <span class="font-semibold">Beispiele:</span>
+      <button @click="requestDemoText('b2')"
+              class="px-4 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors text-primary font-medium">
         B2 Originaltext
       </button>
-      <button
-        @click="loadDemoText('b1')"
-        class="text-blue-600 hover:text-blue-800 underline"
-      >
+      <button @click="requestDemoText('b1')"
+              class="px-4 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors text-primary font-medium">
         B1 Text
       </button>
-      <button
-        @click="loadDemoText('a2')"
-        class="text-blue-600 hover:text-blue-800 underline"
-      >
+      <button @click="requestDemoText('a2')"
+              class="px-4 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors text-primary font-medium">
         A2 Text
       </button>
-      <button
-        @click="loadDemoText('a1')"
-        class="text-blue-600 hover:text-blue-800 underline"
-      >
+      <button @click="requestDemoText('a1')"
+              class="px-4 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors text-primary font-medium">
         A1 Text
       </button>
     </div>
+  </section>
 
-    <button
-      @click="checkText()"
-      :disabled="loading || !inputText.trim()"
-      class="mt-4 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-    >
-      <span x-show="!loading">Text prüfen</span>
-      <span x-show="loading" class="flex items-center">
-          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-               viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Wird geprüft...
-        </span>
-    </button>
-  </div>
+  <!-- Hilfe-Akkordeon -->
+  <section class="bg-surface-container-low rounded-[24px] overflow-hidden">
+    <details class="group">
+      <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
+        <p class="flex items-center gap-4">
+          <span class="material-symbols-outlined text-secondary" data-icon="help">help</span>
+          <span class="text-xl font-bold text-on-surface">Wie kopiere und füge ich ein?</span>
+        </p>
+        <span class="material-symbols-outlined transition-transform group-open:rotate-180" data-icon="expand_more">expand_more</span>
+      </summary>
+      <div class="p-6 pt-0 space-y-4 text-xl text-on-surface-variant easy-read-width">
+        <p>1. Markiere den gewünschten Text.</p>
+        <p>2. Klicke auf Kopieren.</p>
+        <p>3. Dann füge ihn hier ein.</p>
+      </div>
+    </details>
+  </section>
 
-  <!-- Error Message -->
-  <div x-show="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-    <div class="flex">
-      <svg class="h-5 w-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"></path>
-      </svg>
-      <p class="text-sm text-red-700" x-text="error"></p>
+
+  <!-- Fehlermeldung -->
+  <div x-show="error" class="bg-error-container border border-error/20 rounded-[24px] p-6">
+    <div class="flex items-start gap-4">
+      <span class="material-symbols-outlined text-error mt-0.5">error</span>
+      <p class="text-on-error-container text-lg" x-text="error"></p>
     </div>
   </div>
 
-  <!-- Results -->
-  <div x-show="results" class="space-y-6">
+  <!-- Ergebnisse -->
+  <div x-show="results" class="space-y-8">
 
-    <!-- Statistics Overview -->
+    <!-- Statistik -->
     <template x-if="results && results.statistics">
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">📊 Statistik</h2>
+      <div class="bg-surface-container-lowest rounded-[32px] shadow-sm p-8">
+        <h2 class="text-2xl font-black text-primary mb-6">Statistik</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-red-50 rounded-lg p-4 text-center">
-            <p class="text-sm text-gray-600 mb-1">Verstöße gesamt</p>
-            <p class="text-3xl font-bold text-red-600" x-text="results.statistics.total_violations"></p>
+          <div class="bg-error-container rounded-[20px] p-4 text-center">
+            <p class="text-sm font-medium text-on-surface-variant mb-1">Verstöße gesamt</p>
+            <p class="text-3xl font-black text-error" x-text="results.statistics.total_violations"></p>
           </div>
-          <div class="bg-orange-50 rounded-lg p-4 text-center">
-            <p class="text-sm text-gray-600 mb-1">Eindeutige Verstöße</p>
-            <p class="text-3xl font-bold text-orange-600" x-text="results.statistics.unique_violations"></p>
+          <div class="bg-secondary-container/30 rounded-[20px] p-4 text-center">
+            <p class="text-sm font-medium text-on-surface-variant mb-1">Eindeutige Verstöße</p>
+            <p class="text-3xl font-black text-secondary" x-text="results.statistics.unique_violations"></p>
           </div>
-          <div class="bg-blue-50 rounded-lg p-4 text-center">
-            <p class="text-sm text-gray-600 mb-1">Betroffene Wörter</p>
-            <p class="text-3xl font-bold text-blue-600" x-text="getAffectedWordsCount()"></p>
+          <div class="bg-surface-container rounded-[20px] p-4 text-center">
+            <p class="text-sm font-medium text-on-surface-variant mb-1">Betroffene Wörter</p>
+            <p class="text-3xl font-black text-primary" x-text="getAffectedWordsCount()"></p>
           </div>
-          <div class="bg-green-50 rounded-lg p-4 text-center">
-            <p class="text-sm text-gray-600 mb-1">Regel-Kategorien</p>
-            <p class="text-3xl font-bold text-green-600"
+          <div class="bg-surface-container-low rounded-[20px] p-4 text-center">
+            <p class="text-sm font-medium text-on-surface-variant mb-1">Regel-Kategorien</p>
+            <p class="text-3xl font-black text-on-surface"
                x-text="Object.keys(results.statistics.violations_by_rule || {}).length"></p>
           </div>
         </div>
 
-        <!-- Violations by Rule -->
         <template x-if="results.statistics.violations_by_rule">
           <div>
-            <h3 class="text-sm font-semibold text-gray-700 mb-3">Verstöße nach Regel</h3>
+            <h3 class="text-base font-bold text-on-surface-variant mb-3">Verstöße nach Regel</h3>
             <div class="space-y-2">
               <template x-for="(count, rule) in results.statistics.violations_by_rule" :key="rule">
-                <div class="flex items-center justify-between bg-gray-50 rounded px-4 py-2">
-                  <span class="text-sm text-gray-700" x-text="formatRuleName(rule)"></span>
-                  <span class="bg-red-100 text-red-700 text-xs font-medium px-2.5 py-0.5 rounded" x-text="count"></span>
+                <div class="flex items-center justify-between bg-surface-container-low rounded-xl px-5 py-3">
+                  <span class="text-base text-on-surface" x-text="formatRuleName(rule)"></span>
+                  <span class="bg-error-container text-error text-sm font-bold px-3 py-0.5 rounded-full"
+                        x-text="count"></span>
                 </div>
               </template>
             </div>
@@ -130,28 +322,26 @@
       </div>
     </template>
 
-    <!-- Issues List -->
+    <!-- Gefundene Probleme -->
     <template x-if="results && results.issues && results.issues.length > 0">
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">
-          🔍 Gefundene Probleme
-          <span class="text-base font-normal text-gray-500">(<span x-text="results.issues.length"></span>)</span>
+      <div class="bg-surface-container-lowest rounded-[32px] shadow-sm p-8">
+        <h2 class="text-2xl font-black text-primary mb-6">
+          Gefundene Probleme
+          <span class="text-lg font-medium text-on-surface-variant ml-2">(<span x-text="results.issues.length"></span>)</span>
         </h2>
-
         <div class="space-y-4">
           <template x-for="(issue, index) in results.issues" :key="index">
-            <div class="border-l-4 border-red-400 bg-red-50 p-4 rounded-r-lg hover:bg-red-100 transition-colors">
-              <div class="flex items-start">
-                <div class="flex-shrink-0">
-                  <span class="text-2xl" x-text="getIssueIcon(issue.rule_id)"></span>
-                </div>
-                <div class="ml-4 flex-1">
-                  <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-sm font-semibold text-gray-900"
+            <div class="border-l-4 border-error bg-error-container/40 p-5 rounded-r-[20px]">
+              <div class="flex items-start gap-4">
+                <span class="text-2xl flex-shrink-0" x-text="getIssueIcon(issue.rule_id)"></span>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+                    <h3 class="text-base font-bold text-on-surface"
                         x-text="formatRuleName(issue.rule_id.replace('_issue', ''))"></h3>
-                    <span class="bg-red-200 text-red-800 text-xs font-medium px-2 py-0.5 rounded" x-text="'\"' + issue.text + '\"'"></span>
+                    <span class="bg-error-container text-error text-sm font-bold px-3 py-0.5 rounded-full"
+                          x-text="'»' + issue.text + '«'"></span>
                   </div>
-                  <p class="text-sm text-gray-700" x-text="issue.message"></p>
+                  <p class="text-base text-on-surface-variant" x-text="issue.message"></p>
                 </div>
               </div>
             </div>
@@ -160,39 +350,123 @@
       </div>
     </template>
 
-    <!-- Annotated Text -->
+    <!-- Annotierter Text -->
     <template x-if="results && results.annotated_text">
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">📝 Annotierter Text</h2>
-        <div class="bg-gray-50 rounded-lg p-4 text-sm leading-relaxed">
-          <p class="text-gray-700 whitespace-pre-wrap" x-text="results.annotated_text"></p>
+      <div class="bg-surface-container-lowest rounded-[32px] shadow-sm p-8">
+        <h2 class="text-2xl font-black text-primary mb-6">Annotierter Text</h2>
+        <div class="bg-surface-container-low rounded-[20px] p-6 leading-relaxed">
+          <p class="text-on-surface whitespace-pre-wrap text-lg" x-text="results.annotated_text"></p>
         </div>
-        <p class="text-xs text-gray-500 mt-3">
-          ℹ️ Dieser Text zeigt, welche Wörter und Stellen markiert wurden. Detaillierte Erklärungen finden Sie in den
-          Problemen oben.
+        <p class="text-sm text-on-surface-variant mt-4">
+          Dieser Text zeigt, welche Wörter markiert wurden. Die Erklärungen findest du oben.
         </p>
       </div>
     </template>
 
-    <!-- Success Message if no issues -->
+    <!-- Erfolgsmeldung -->
     <template x-if="results && (!results.issues || results.issues.length === 0)">
-      <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-        <div class="text-5xl mb-3">✅</div>
-        <h3 class="text-lg font-semibold text-green-800 mb-2">Großartig!</h3>
-        <p class="text-green-700">Ihr Text enthält keine Verstöße gegen die Regeln der Leichten Sprache.</p>
+      <div class="bg-surface-container-low rounded-[32px] p-10 text-center">
+        <div class="text-6xl mb-4">✅</div>
+        <h3 class="text-2xl font-black text-primary mb-2">Sehr gut!</h3>
+        <p class="text-xl text-on-surface-variant">Dein Text enthält keine Verstöße gegen die Regeln der Leichten
+          Sprache.</p>
       </div>
     </template>
 
   </div>
-</div>
+
+  <!-- Bestätigungs-Overlay -->
+  <div
+    x-show="confirmOverlay"
+    x-transition.opacity
+    x-trap="confirmOverlay"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+    @keydown.escape.window="confirmOverlay = false"
+  >
+    <div class="bg-surface-container-lowest rounded-[32px] shadow-2xl p-8 max-w-sm w-full mx-4 space-y-6">
+      <div class="flex items-start gap-4">
+        <span class="material-symbols-outlined text-secondary text-3xl mt-0.5">warning</span>
+        <div>
+          <h3 class="text-xl font-black text-on-surface mb-1">Text ersetzen?</h3>
+          <p class="text-base text-on-surface-variant">Du hast bereits einen eigenen Text eingegeben. Möchtest du ihn
+            durch den Beispieltext ersetzen?</p>
+        </div>
+      </div>
+      <div class="flex gap-3 justify-end">
+        <button
+          @click="confirmOverlay = false"
+          class="px-6 py-3 rounded-xl font-bold text-base bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface"
+        >Abbrechen
+        </button>
+        <button
+          @click="confirmLoadDemo()"
+          class="px-6 py-3 rounded-xl font-bold text-base bg-primary text-on-primary hover:brightness-110 transition-all"
+        >Ersetzen
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Navigation (Bottom auf Mobile, Sidebar auf Desktop) -->
+<nav id="sidebar" class="
+  fixed bottom-0 w-full z-50
+  rounded-t-[32px] bg-[#f4faff] shadow-[0_-12px_32px_rgba(9,30,39,0.06)] dark:bg-slate-950
+  md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-8 md:w-auto
+  md:rounded-full md:bg-surface-container-highest/50 md:backdrop-blur-md md:shadow-lg md:dark:bg-surface-container-highest/50
+">
+  <div class="
+    flex flex-row justify-around items-center w-full px-4 pb-6 pt-3
+    md:flex-col md:justify-center md:w-auto md:p-4 md:gap-6 md:pb-4 md:pt-4
+  ">
+    <a id="sidebar-first" href="#" class="
+      flex flex-col items-center justify-center rounded-2xl px-6 py-2 transition-all duration-200
+      bg-[#fcd400] text-[#6e5c00]
+      md:flex-row md:rounded-full md:w-12 md:h-12 md:px-0 md:py-0 md:bg-primary md:text-on-primary md:shadow-md
+    ">
+      <span>✓</span>
+      <span class="font-body font-medium text-[12px] md:hidden">Prüfen</span>
+    </a>
+    <a href="#" class="
+      flex flex-col items-center justify-center rounded-2xl px-6 py-2 transition-all duration-200
+      text-[#091e27] hover:bg-[#dcf1fd] dark:text-slate-400 dark:hover:bg-slate-800
+      md:flex-row md:rounded-full md:w-12 md:h-12 md:px-0 md:py-0 md:bg-surface-container-lowest md:text-primary md:hover:bg-primary/10 md:dark:bg-surface-container-lowest
+    ">
+      <span class="material-symbols-outlined">history</span>
+      <span class="font-body font-medium text-[12px] md:hidden">Verlauf</span>
+    </a>
+    <a href="#" class="
+      flex flex-col items-center justify-center rounded-2xl px-6 py-2 transition-all duration-200
+      text-[#091e27] hover:bg-[#dcf1fd] dark:text-slate-400 dark:hover:bg-slate-800
+      md:flex-row md:rounded-full md:w-12 md:h-12 md:px-0 md:py-0 md:bg-surface-container-lowest md:text-primary md:hover:bg-primary/10 md:dark:bg-surface-container-lowest
+    ">
+      <span class="material-symbols-outlined">bookmark</span>
+      <span class="font-body font-medium text-[12px] md:hidden">Gespeichert</span>
+    </a>
+    <a href="#" class="
+      flex flex-col items-center justify-center rounded-2xl px-6 py-2 transition-all duration-200
+      text-[#091e27] hover:bg-[#dcf1fd] dark:text-slate-400 dark:hover:bg-slate-800
+      md:flex-row md:rounded-full md:w-12 md:h-12 md:px-0 md:py-0 md:bg-surface-container-lowest md:text-primary md:hover:bg-primary/10 md:dark:bg-surface-container-lowest
+    ">
+      <span class="material-symbols-outlined">help</span>
+      <span class="font-body font-medium text-[12px] md:hidden">Hilfe</span>
+    </a>
+  </div>
+</nav>
 
 <script>
+  // noinspection JSUnusedGlobalSymbols
   function checker() {
     return {
       inputText: '',
       loading: false,
       error: '',
       results: null,
+      confirmOverlay: false,
+      pendingDemoType: null,
+      clipboardBanner: false,
+      clipboardText: '',
+      clipboardDismissed: false,
 
       async checkText() {
         this.loading = true;
@@ -206,9 +480,7 @@
               'Accept': 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              text: this.inputText,
-            }),
+            body: JSON.stringify({ text: this.inputText }),
           });
 
           if (!response.ok) {
@@ -217,7 +489,7 @@
 
           this.results = await response.json();
         } catch (err) {
-          this.error = err.message || 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
+          this.error = err.message || 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.';
         } finally {
           this.loading = false;
         }
@@ -253,55 +525,74 @@
         if (!this.results || !this.results.issues) {
           return 0;
         }
-        const uniqueWords = new Set(this.results.issues.map(i => i.text));
-        return uniqueWords.size;
+        return new Set(this.results.issues.map(i => i.text)).size;
+      },
+
+      demoTexts: {
+        b2: 'Die 4m breite Feuerwehrzufahrt sowie der Reversierplatz für das Feuerwehrfahrzeug sind in jedem Fall freizuhalten. Es darf auch kurzfristig keine Ware in diesem Bereich gelagert werden.',
+        b1: `Feuerwehr-Zufahrt:\nDie 4 Meter breite Feuerwehr-Zufahrt\nmuss immer frei gehalten werden.\n\nAuch der Reversierplatz,\nden das Feuerwehrfahrzeug\nzum Umdrehen benötigt,\nmuss immer freigehalten werden.\n\nEs darf dort niemals etwas abgestellt\noder gelagert werden – auch nicht für kurze Zeit.`,
+        a2: `Die Feuerwehr-Zufahrt:\nBei allen Märkten gibt es\neine 4 Meter breite Feuerwehr-Zufahrt.\n\nAußerdem gibt es einen Platz,\nauf dem das Feuerwehr-Fahrzeug\nleicht umdrehen kann.\nDieser Platz heißt „Reversierplatz".\n\nDieser Platz und die Feuerwehr-Zufahrt\nmüssen immer freigehalten werden!\n\nEs darf dort niemals etwas abgestellt\noder gelagert werden.\nAuch nicht für kurze Zeit.`,
+        a1: `Dieser Platz ist für die Feuerwehr.\nHier darf nie etwas stehen.`,
+      },
+
+      // noinspection JSUnusedGlobalSymbols
+      requestDemoText(type) {
+        const isCustom = this.inputText.trim() && !Object.values(this.demoTexts).includes(this.inputText);
+        if (isCustom) {
+          this.pendingDemoType = type;
+          this.confirmOverlay = true;
+        } else {
+          this.loadDemoText(type);
+        }
+      },
+
+      // noinspection JSUnusedGlobalSymbols
+      confirmLoadDemo() {
+        this.loadDemoText(this.pendingDemoType);
+        this.confirmOverlay = false;
+        this.pendingDemoType = null;
+      },
+
+      async checkClipboard() {
+        if (this.inputText.trim() || this.clipboardDismissed) return;
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text.trim()) {
+            this.clipboardText = text;
+            this.clipboardBanner = true;
+          }
+        } catch (e) {
+          // Permission denied oder nicht unterstützt – stillschweigend ignorieren
+        }
+      },
+
+      pasteClipboard() {
+        this.inputText = this.clipboardText;
+        this.clipboardBanner = false;
+        this.clipboardText = '';
+        this.$nextTick(() => {
+          const ta = document.getElementById('textInput');
+          if (ta) ta.rows = 7;
+        });
       },
 
       loadDemoText(type) {
-        const demoTexts = {
-          b2: 'Die 4m breite Feuerwehrzufahrt sowie der Reversierplatz für das Feuerwehrfahrzeug sind in jedem Fall freizuhalten. Es darf auch kurzfristig keine Ware in diesem Bereich gelagert werden.',
-
-          b1: `Feuerwehr-Zufahrt:
-Die 4 Meter breite Feuerwehr-Zufahrt
-muss immer frei gehalten werden.
-
-Auch der Reversierplatz,
-den das Feuerwehrfahrzeug
-zum Umdrehen benötigt,
-muss immer freigehalten werden.
-
-Es darf dort niemals etwas abgestellt
-oder gelagert werden – auch nicht für kurze Zeit.`,
-
-          a2: `Die Feuerwehr-Zufahrt:
-Bei allen Märkten gibt es
-eine 4 Meter breite Feuerwehr-Zufahrt.
-
-Außerdem gibt es einen Platz,
-auf dem das Feuerwehr-Fahrzeug
-leicht umdrehen kann.
-Dieser Platz heißt „Reversierplatz".
-
-Dieser Platz und die Feuerwehr-Zufahrt
-müssen immer freigehalten werden!
-
-Es darf dort niemals etwas abgestellt
-oder gelagert werden.
-Auch nicht für kurze Zeit.`,
-
-          a1: `Dieser Platz ist für die Feuerwehr.
-Hier darf nie etwas stehen.`,
-        };
-
-        this.inputText = demoTexts[type] || '';
+        this.inputText = this.demoTexts[type] || '';
         this.results = null;
         this.error = '';
+        this.$nextTick(() => {
+          const ta = document.getElementById('textInput');
+          if (ta) {
+            ta.rows = 7;
+          }
+        });
       },
     };
   }
 </script>
-<script src='https://cdn.tailwindcss.com'></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.15.0/cdn.js'></script>
-</body>
 
+<script>
+</script>
+
+</body>
 </html>
